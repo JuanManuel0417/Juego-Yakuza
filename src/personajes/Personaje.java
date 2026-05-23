@@ -4,6 +4,7 @@ import armas.Arma;
 import curas.Cura;
 import interfaces.Atacable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Personaje implements Atacable {
     protected String nombre;
@@ -14,6 +15,7 @@ public abstract class Personaje implements Atacable {
     protected ArrayList<Arma> inventarioArmas;
     protected Arma armaEquipada;
     protected ArrayList<Cura> inventarioCuras;
+    protected Random random = new Random();
 
     //Constructor
     public Personaje(String nombre, int vida){
@@ -115,6 +117,19 @@ public abstract class Personaje implements Atacable {
         System.out.println("Daño realizado: " + danio);
     }
 
+    public int atacarSilencioso(Personaje enemigo){
+        if(armaEquipada == null){
+            return 0;
+        }
+        int base = armaEquipada.getDanio() + random.nextInt(5) - 2;
+        if(base < 1){
+            base = 1;
+        }
+        int danio = calcularDanio(base, enemigo.getEsquives() * 2);
+        enemigo.recibirDanio(danio);
+        return danio;
+    }
+
 
     // CURAS
     public void guardarCura(Cura cura){
@@ -157,6 +172,26 @@ public abstract class Personaje implements Atacable {
         inventarioCuras.remove(opcion);
     }
 
+    public int usarCuraSilencioso(int opcion){
+        if(inventarioCuras.size() == 0){
+            return 0;
+        }
+        if(opcion < 0 || opcion >= inventarioCuras.size()){
+            return 0;
+        }
+
+        Cura cura = inventarioCuras.get(opcion);
+        int curacion = cura.getCuracion();
+        vida += curacion;
+
+        if(vida > vidaMaxima){
+            vida = vidaMaxima;
+        }
+
+        inventarioCuras.remove(opcion);
+        return curacion;
+    }
+
     public boolean esquivar(){
         if(esquives > 0){
             esquives--;
@@ -164,6 +199,14 @@ public abstract class Personaje implements Atacable {
             return true;
         }
         System.out.println(nombre + " no tiene esquives");
+        return false;
+    }
+
+    public boolean esquivarSilencioso(){
+        if(esquives > 0){
+            esquives--;
+            return random.nextInt(100) < 75;
+        }
         return false;
     }
 
@@ -208,5 +251,17 @@ public abstract class Personaje implements Atacable {
 
     public int getCantidadArmas(){
         return inventarioArmas.size();
+    }
+
+    public int getVidaMaxima(){
+        return vidaMaxima;
+    }
+
+    public ArrayList<Cura> getInventarioCuras(){
+        return inventarioCuras;
+    }
+
+    public ArrayList<Arma> getInventarioArmas(){
+        return inventarioArmas;
     }
 }

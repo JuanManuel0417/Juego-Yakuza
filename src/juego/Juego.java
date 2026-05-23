@@ -79,6 +79,40 @@ public class Juego {
         }
     }
 
+    public Yakuza crearJugadorAleatorio(String nombre){
+        int dinero = 100 + random.nextInt(151);
+        Yakuza jugador = new Yakuza(nombre, 100, dinero);
+        jugador.guardarCura(new Agua());
+        jugador.guardarCura(new Venda());
+        if(random.nextBoolean()){
+            jugador.guardarCura(new Botiquin());
+        }
+        jugador.guardarArma(new Cuchillo());
+        return jugador;
+    }
+
+    public Policia crearEnemigoAleatorio(int nivel){
+        int vida = 80 + random.nextInt(41);
+        Policia enemigo = new Policia("Policia " + nivel, vida);
+        int tipoArma = random.nextInt(3);
+        if(tipoArma == 0){
+            enemigo.guardarArma(new Pistola());
+        } else if(tipoArma == 1){
+            enemigo.guardarArma(new Glock());
+        } else {
+            enemigo.guardarArma(new Cuchillo());
+        }
+        enemigo.guardarCura(new Botiquin());
+        if(random.nextBoolean()){
+            enemigo.guardarCura(new Venda());
+        }
+        return enemigo;
+    }
+
+    public int calcularPuntaje(Yakuza jugador){
+        return jugador.getNivel() * 100 + jugador.getDinero();
+    }
+
     //Este es el metodo que crea la tienda como tal
     public void tienda(Yakuza jugador){
         int opcion;

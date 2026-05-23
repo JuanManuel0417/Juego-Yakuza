@@ -4,6 +4,6 @@ package armas;
 public class Pistola extends Arma{
     public Pistola(){
         //Aca se hace llamado al contructor de armas y se le asignan estos valores
-        super("Pistola", 20, 100);
+        super("Pistola", 18, 28, 130, 170);
     }
 }

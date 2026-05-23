@@ -1,14 +1,21 @@
 package curas;
 
+import java.util.Random;
+
 public class Cura {
     private String nombre;
-    private int curacion;
-    private int precio;
+    private int curacionMin;
+    private int curacionMax;
+    private int precioMin;
+    private int precioMax;
+    private Random random = new Random();
 
-    public Cura (String nombre, int curacion, int precio){
+    public Cura(String nombre, int curacionMin, int curacionMax, int precioMin, int precioMax){
         this.nombre = nombre;
-        this.curacion = curacion;
-        this.precio = precio;
+        this.curacionMin = curacionMin;
+        this.curacionMax = curacionMax;
+        this.precioMin = precioMin;
+        this.precioMax = precioMax;
     }
 
     public String getNombre(){
@@ -16,15 +23,19 @@ public class Cura {
     }
 
     public int getCuracion(){
-        return curacion;
+        return curacionMin + random.nextInt(curacionMax - curacionMin + 1);
     }
 
     public int getPrecio(){
-        return precio;
+        return precioMin + random.nextInt(precioMax - precioMin + 1);
+    }
+
+    public int getCuracionPromedia(){
+        return (curacionMin + curacionMax) / 2;
     }
 
     @Override
     public String toString(){
-        return nombre + " | Cura: " + curacion + " | Precio: $" + precio;
+        return nombre + " | Cura: " + curacionMin + "-" + curacionMax + " | Precio: $" + precioMin + "-" + precioMax;
     }
 }
