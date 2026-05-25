@@ -2,11 +2,10 @@ package gui;
 
 import juego.Juego;
 import personajes.Personaje;
-import personajes.Policia;
 import personajes.Yakuza;
 import utils.Top5Manager;
 
-import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,7 +14,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,12 +39,12 @@ public class VentanaJuego extends JFrame {
     private JLabel armaLabel;
     private JLabel curasLabel;
     private JTextArea areaMensajes;
-    private JButton atacarBtn;
-    private JButton curarBtn;
-    private JButton esquivarBtn;
-    private JButton cambiarArmaBtn;
-    private JButton tiendaBtn;
-    private JButton volverBtn;
+    private BotonYakuza atacarBtn;
+    private BotonYakuza curarBtn;
+    private BotonYakuza esquivarBtn;
+    private BotonYakuza cambiarArmaBtn;
+    private BotonYakuza tiendaBtn;
+    private BotonYakuza volverBtn;
 
     public VentanaJuego(MenuPrincipal menu) {
         this.menu = menu;
@@ -54,12 +52,12 @@ public class VentanaJuego extends JFrame {
         this.random = new Random();
         this.top5Manager = new Top5Manager();
 
-        setTitle("Yakuza - Batalla");
+        setTitle("YAKUZA - BATALLA");
         setSize(620, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(240, 240, 240));
+        getContentPane().setBackground(Colores.FONDO);
 
         initComponents();
         iniciarJuego();
@@ -81,16 +79,26 @@ public class VentanaJuego extends JFrame {
         armaLabel = new JLabel("Arma: Sin arma");
         curasLabel = new JLabel("Curas: ninguna");
 
-        vidaJugadorLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        vidaEnemigoLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        dineroLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        nivelLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        armaLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        curasLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        vidaJugadorLabel.setFont(Colores.FUENTE_NORMAL);
+        vidaEnemigoLabel.setFont(Colores.FUENTE_NORMAL);
+        dineroLabel.setFont(Colores.FUENTE_NORMAL);
+        nivelLabel.setFont(Colores.FUENTE_NORMAL);
+        armaLabel.setFont(Colores.FUENTE_NORMAL);
+        curasLabel.setFont(Colores.FUENTE_NORMAL);
+
+        vidaJugadorLabel.setForeground(Colores.VERDE_CLARO);
+        vidaEnemigoLabel.setForeground(Colores.ROJO_CLARO);
+        dineroLabel.setForeground(Colores.AMARILLO);
+        nivelLabel.setForeground(Colores.TEXTO);
+        armaLabel.setForeground(Colores.TEXTO);
+        curasLabel.setForeground(Colores.TEXTO_MUTED);
 
         JPanel infoPanel = new JPanel(new GridLayout(3, 2, 8, 8));
-        infoPanel.setBackground(new Color(220, 220, 230));
-        infoPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        infoPanel.setBackground(Colores.PANEL);
+        infoPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Colores.BORDE, 1),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+        ));
         infoPanel.add(vidaJugadorLabel);
         infoPanel.add(vidaEnemigoLabel);
         infoPanel.add(dineroLabel);
@@ -101,42 +109,32 @@ public class VentanaJuego extends JFrame {
 
         areaMensajes = new JTextArea();
         areaMensajes.setEditable(false);
-        areaMensajes.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        areaMensajes.setBackground(new Color(245, 245, 245));
+        areaMensajes.setFont(Colores.FUENTE_PEQUENA);
+        areaMensajes.setBackground(new Color(10, 10, 10));
+        areaMensajes.setForeground(Colores.TEXTO_MUTED);
         areaMensajes.setLineWrap(true);
         areaMensajes.setWrapStyleWord(true);
-        add(new JScrollPane(areaMensajes), BorderLayout.CENTER);
+        areaMensajes.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Colores.BORDE, 1),
+            BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
 
-        atacarBtn = new JButton("Atacar");
-        curarBtn = new JButton("Curarse");
-        esquivarBtn = new JButton("Esquivar");
-        cambiarArmaBtn = new JButton("Cambiar arma");
-        tiendaBtn = new JButton("Tienda");
-        volverBtn = new JButton("Volver al menú");
+        JScrollPane scrollMensajes = new JScrollPane(areaMensajes);
+        scrollMensajes.setBorder(null);
+        scrollMensajes.getViewport().setBackground(new Color(10, 10, 10));
+        add(scrollMensajes, BorderLayout.CENTER);
+
+        atacarBtn = new BotonYakuza("⚔  Atacar", true);
+        curarBtn = new BotonYakuza("💊  Curarse");
+        esquivarBtn = new BotonYakuza("↩  Esquivar");
+        cambiarArmaBtn = new BotonYakuza("🔄  Cambiar arma");
+        tiendaBtn = new BotonYakuza("🛒  Tienda");
+        volverBtn = new BotonYakuza("←  Volver al menú");
         volverBtn.setEnabled(false);
 
-        atacarBtn.setBackground(new Color(200, 100, 100));
-        curarBtn.setBackground(new Color(100, 150, 100));
-        esquivarBtn.setBackground(new Color(100, 150, 200));
-        cambiarArmaBtn.setBackground(new Color(150, 150, 100));
-        tiendaBtn.setBackground(new Color(150, 100, 150));
-        volverBtn.setBackground(new Color(150, 150, 150));
-
-        atacarBtn.setForeground(Color.WHITE);
-        curarBtn.setForeground(Color.WHITE);
-        esquivarBtn.setForeground(Color.WHITE);
-        cambiarArmaBtn.setForeground(Color.WHITE);
-        tiendaBtn.setForeground(Color.WHITE);
-        volverBtn.setForeground(Color.WHITE);
-
-        for (JButton btn : new JButton[]{atacarBtn, curarBtn, esquivarBtn, cambiarArmaBtn, tiendaBtn, volverBtn}) {
-            btn.setFont(new Font("Arial", Font.BOLD, 11));
-            btn.setFocusPainted(false);
-        }
-
         JPanel accionesPanel = new JPanel(new GridLayout(2, 3, 8, 8));
-        accionesPanel.setBackground(new Color(240, 240, 240));
-        accionesPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        accionesPanel.setBackground(Colores.FONDO);
+        accionesPanel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
         accionesPanel.add(atacarBtn);
         accionesPanel.add(curarBtn);
         accionesPanel.add(esquivarBtn);
@@ -323,7 +321,7 @@ public class VentanaJuego extends JFrame {
     }
 
     private void victoriaCombate() {
-        appendMensaje("\\n*** ¡VICTORIA! ***");
+        appendMensaje("\n*** ¡VICTORIA! ***");
         appendMensaje("Has derrotado a " + enemigoActual.getNombre() + ".");
         if (nivelActual < enemigos.size() - 1) {
             int recompensa = 100 + random.nextInt(151);
@@ -336,10 +334,7 @@ public class VentanaJuego extends JFrame {
             appendMensaje("Subes de nivel y recibes $" + recompensa + ".");
             appendMensaje("Nuevo rival: " + enemigoActual.getNombre());
             appendMensaje("");
-            
-            // Alerta de subida de nivel
             JOptionPane.showMessageDialog(this, "¡Subiste al Nivel " + jugador.getNivel() + "!\n\nRecompensa: $" + recompensa + "\nVida restaurada", "¡Nivel Subido!", JOptionPane.INFORMATION_MESSAGE);
-            
             actualizarEstado();
         } else {
             finJuego(true);
@@ -347,14 +342,13 @@ public class VentanaJuego extends JFrame {
     }
 
     private void finJuego(boolean victoria) {
-        String mensajeFinal = victoria ? "\\n*** ¡¡VICTORIA FINAL!! ***" : "\\n*** HAS SIDO DERROTADO ***";
+        String mensajeFinal = victoria ? "\n*** ¡¡VICTORIA FINAL!! ***" : "\n*** HAS SIDO DERROTADO ***";
         int puntaje = juego.calcularPuntaje(jugador);
-        mensajeFinal += "\\nNivel alcanzado: " + jugador.getNivel();
-        mensajeFinal += "\\nDinero: $" + jugador.getDinero();
-        mensajeFinal += "\\nPuntaje: " + puntaje;
-        
+        mensajeFinal += "\nNivel alcanzado: " + jugador.getNivel();
+        mensajeFinal += "\nDinero: $" + jugador.getDinero();
+        mensajeFinal += "\nPuntaje: " + puntaje;
+
         if (!victoria) {
-            // Opción de reintentar nivel si pierdes
             int opcion = JOptionPane.showConfirmDialog(this, "Fuiste derrotado en el Nivel " + jugador.getNivel() + "\n\n¿Deseas reintentar este nivel?\n(Se reiniciarán tus stats)", "¿Reintentar?", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 jugador.restaurarVida();
@@ -368,7 +362,7 @@ public class VentanaJuego extends JFrame {
                 return;
             }
         }
-        
+
         JOptionPane.showMessageDialog(this, mensajeFinal, "Fin del juego", JOptionPane.INFORMATION_MESSAGE);
         top5Manager.guardarPuntaje(jugador.getNombre(), jugador.getNivel(), puntaje);
         atacarBtn.setEnabled(false);

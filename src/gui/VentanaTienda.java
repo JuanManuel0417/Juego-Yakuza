@@ -11,15 +11,14 @@ import curas.Botiquin;
 import curas.Cura;
 import curas.Venda;
 
-import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,30 +27,36 @@ public class VentanaTienda extends JDialog {
     private Yakuza jugador;
 
     public VentanaTienda(JFrame parent, Yakuza jugador) {
-        super(parent, "Tienda", true);
+        super(parent, "TIENDA", true);
         this.jugador = jugador;
 
-        setSize(500, 400);
+        setSize(540, 420);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(240, 240, 240));
+        getContentPane().setBackground(Colores.FONDO);
 
-        JLabel tituloLabel = new JLabel("TIENDA", JLabel.CENTER);
-        tituloLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        tituloLabel.setOpaque(true);
-        tituloLabel.setBackground(new Color(50, 100, 150));
-        tituloLabel.setForeground(Color.WHITE);
-        add(tituloLabel, BorderLayout.NORTH);
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(Colores.PANEL);
+        header.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, Colores.BORDE),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
 
-        JLabel dineroLabel = new JLabel("Dinero disponible: $" + jugador.getDinero(), JLabel.CENTER);
-        dineroLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        dineroLabel.setOpaque(true);
-        dineroLabel.setBackground(new Color(200, 220, 240));
-        add(dineroLabel, BorderLayout.NORTH);
-        add(dineroLabel, BorderLayout.NORTH);
+        JLabel tituloLabel = new JLabel("⚔  TIENDA");
+        tituloLabel.setFont(Colores.FUENTE_GRANDE);
+        tituloLabel.setForeground(Colores.AMARILLO);
+        header.add(tituloLabel, BorderLayout.WEST);
+
+        JLabel dineroLabel = new JLabel("$ " + jugador.getDinero());
+        dineroLabel.setFont(Colores.FUENTE_TITULO);
+        dineroLabel.setForeground(Colores.VERDE);
+        dineroLabel.setHorizontalAlignment(JLabel.RIGHT);
+        header.add(dineroLabel, BorderLayout.EAST);
+        add(header, BorderLayout.NORTH);
 
         JPanel productosPanel = new JPanel(new GridLayout(4, 2, 8, 8));
-        productosPanel.setBackground(new Color(240, 240, 240));
+        productosPanel.setBackground(Colores.FONDO);
+        productosPanel.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
 
         agregarProducto(productosPanel, "Cuchillo");
         agregarProducto(productosPanel, "Pistola");
@@ -63,22 +68,23 @@ public class VentanaTienda extends JDialog {
 
         add(productosPanel, BorderLayout.CENTER);
 
-        JButton cerrarBtn = new JButton("Cerrar");
-        cerrarBtn.setFont(new Font("Arial", Font.PLAIN, 12));
-        cerrarBtn.setBackground(new Color(200, 100, 100));
-        cerrarBtn.setForeground(Color.WHITE);
+        JPanel footer = new JPanel();
+        footer.setBackground(Colores.FONDO);
+        footer.setBorder(BorderFactory.createEmptyBorder(0, 16, 12, 16));
+        BotonYakuza cerrarBtn = new BotonYakuza("Cerrar", true);
+        cerrarBtn.setPreferredSize(new Dimension(140, 44));
         cerrarBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
-        add(cerrarBtn, BorderLayout.SOUTH);
+        footer.add(cerrarBtn);
+        add(footer, BorderLayout.SOUTH);
 
         setVisible(true);
     }
 
     private void agregarProducto(JPanel panel, String nombre) {
-        // Crear instancia temporal para obtener el rango de precio
         Arma armaTemp = null;
         Cura curaTemp = null;
         String precioRango = "";
@@ -106,16 +112,14 @@ public class VentanaTienda extends JDialog {
             precioRango = "$80-120";
         }
 
-        JButton btn = new JButton(nombre + " " + precioRango);
-        btn.setFont(new Font("Arial", Font.PLAIN, 11));
-        btn.setBackground(new Color(100, 150, 200));
-        btn.setForeground(Color.WHITE);
+        BotonYakuza btn = new BotonYakuza(nombre + " " + precioRango);
+        btn.setPreferredSize(new Dimension(0, 48));
 
         final String nombreProducto = nombre;
         btn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 comprarProducto(nombreProducto);
-                ((JButton) e.getSource()).getParent().revalidate();
+                btn.getParent().revalidate();
             }
         });
 
@@ -125,7 +129,6 @@ public class VentanaTienda extends JDialog {
     private void comprarProducto(String nombre) {
         int precio = 0;
 
-        // Obtener precio aleatorio del producto
         if (nombre.equals("Cuchillo")) {
             Cuchillo temp = new Cuchillo();
             precio = temp.getPrecio();

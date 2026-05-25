@@ -3,53 +3,73 @@ package gui;
 import utils.Top5Manager;
 import utils.TopScore;
 
-import javax.swing.JButton;
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class VentanaTop5 extends JDialog {
+    private JTextArea areaTop5;
+
     public VentanaTop5(JFrame parent) {
-        super(parent, "Top 5", true);
-        setSize(420, 350);
+        super(parent, "TOP 5", true);
+        setSize(460, 380);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(240, 240, 240));
+        getContentPane().setBackground(Colores.FONDO);
 
-        JLabel titulo = new JLabel("Top 5 Mejores Puntajes", JLabel.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 18));
+        JLabel titulo = new JLabel("🏆  TOP 5 — MEJORES PUNTAJES", JLabel.CENTER);
+        titulo.setFont(Colores.FUENTE_GRANDE);
         titulo.setOpaque(true);
-        titulo.setBackground(new Color(150, 150, 100));
-        titulo.setForeground(Color.WHITE);
+        titulo.setBackground(Colores.PANEL);
+        titulo.setForeground(Colores.AMARILLO);
+        titulo.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 1, 0, Colores.BORDE),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
         add(titulo, BorderLayout.NORTH);
 
-        JTextArea areaTop5 = new JTextArea();
+        areaTop5 = new JTextArea();
         areaTop5.setEditable(false);
-        areaTop5.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        areaTop5.setBackground(new Color(245, 245, 245));
+        areaTop5.setFont(Colores.FUENTE_PEQUENA);
+        areaTop5.setBackground(new Color(10, 10, 10));
+        areaTop5.setForeground(Colores.TEXTO_MUTED);
         areaTop5.setLineWrap(false);
-        add(new JScrollPane(areaTop5), BorderLayout.CENTER);
+        areaTop5.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Colores.BORDE, 1),
+            BorderFactory.createEmptyBorder(8, 10, 8, 10)
+        ));
 
-        JButton cerrarBtn = new JButton("Cerrar");
-        cerrarBtn.setFont(new Font("Arial", Font.BOLD, 12));
-        cerrarBtn.setBackground(new Color(100, 150, 100));
-        cerrarBtn.setForeground(Color.WHITE);
-        cerrarBtn.setFocusPainted(false);
-        add(cerrarBtn, BorderLayout.SOUTH);
+        JScrollPane scroll = new JScrollPane(areaTop5);
+        scroll.setBorder(null);
+        scroll.getViewport().setBackground(new Color(10, 10, 10));
+        add(scroll, BorderLayout.CENTER);
+
+        JPanel footer = new JPanel();
+        footer.setBackground(Colores.FONDO);
+        footer.setBorder(BorderFactory.createEmptyBorder(0, 16, 12, 16));
+        BotonYakuza cerrarBtn = new BotonYakuza("Cerrar", true);
         cerrarBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
         });
+        footer.add(cerrarBtn);
+        add(footer, BorderLayout.SOUTH);
 
+        actualizarTop5();
+        setVisible(true);
+    }
+
+    private void actualizarTop5() {
         Top5Manager manager = new Top5Manager();
         ArrayList<TopScore> lista = manager.cargarTop5();
         if (lista.isEmpty()) {
@@ -63,7 +83,5 @@ public class VentanaTop5 extends JDialog {
             }
             areaTop5.setText(texto);
         }
-
-        setVisible(true);
     }
 }
